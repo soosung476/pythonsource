@@ -15,3 +15,5 @@ You need Python"""
 print(multiline);
 multiline = '''Life is too short,\nYou need Python'''
 print(multiline);
+
+format()
