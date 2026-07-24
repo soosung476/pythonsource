@@ -1,0 +1,5 @@
+2026-07-20 INFO Login Success user=kim
+2026-07-20 ERROR Database Connection Failed
+2026-07-20 INFO Logout user=kim
+2026-07-21 ERROR Invalid Password
+2026-07-21 INFO Login Success user=lee
