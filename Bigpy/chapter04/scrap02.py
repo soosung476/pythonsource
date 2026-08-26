@@ -29,3 +29,4 @@ with requests.Session() as s:
                 print(data)
     else :
         print(f"요청을 실패해습니다. 상태코드: {r.status_code}")
+
