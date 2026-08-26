@@ -1,7 +1,7 @@
 import openpyxl
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR.parent / "data"
+DATA_DIR = BASE_DIR.parent / "Py_Scrap" / "data"
 
 '''
 wb = openpyxl.load_workbook(DATA_DIR / "sample.xlsx")

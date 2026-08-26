@@ -3,7 +3,7 @@ import numpy as np
 import openpyxl
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR.parent / "data"
+DATA_DIR = BASE_DIR.parent / "Py_Scrap" / "data"
 
 
 df= pd.read_excel(DATA_DIR/'excel_s1.xlsx', sheet_name=0, engine='openpyxl')

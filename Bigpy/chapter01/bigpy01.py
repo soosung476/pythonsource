@@ -1,7 +1,7 @@
 import pickle
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR.parent / "data"
+DATA_DIR = BASE_DIR.parent / "Py_Scrap" / "data"
 file_path = DATA_DIR / "setting.txt"
 # pickle 모듈은 파이썬 객체를 파일로 저장하고 읽어들임
 # 저장된 상태에서 프로그램이 종료되면 객체는 자동 소멸됨

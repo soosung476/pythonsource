@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 import os
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR.parent / "data"
+DATA_DIR = BASE_DIR.parent / "Py_Scrap" / "data"
 
 df1= pd.read_excel(DATA_DIR/'excel_s1.xlsx', header=0)
 # print(df1)

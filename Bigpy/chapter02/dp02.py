@@ -3,7 +3,7 @@ import numpy as np
 import openpyxl
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR.parent / "data"
+DATA_DIR = BASE_DIR.parent / "Py_Scrap" / "data"
 
 
 df1 = pd.DataFrame(np.random.randint(0,100, size=(100,4)), columns=['ONE','TWO','THREE','FOUR'])

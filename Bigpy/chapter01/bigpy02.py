@@ -1,7 +1,7 @@
 import pickle
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR.parent / "data"
+DATA_DIR = BASE_DIR.parent / "Py_Scrap" / "data"
 file_path = DATA_DIR / "setting2.txt"
 
 f = open(file_path, "rb")

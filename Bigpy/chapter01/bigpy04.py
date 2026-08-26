@@ -1,7 +1,7 @@
 import openpyxl
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR.parent / "data"
+DATA_DIR = BASE_DIR.parent / "Py_Scrap" / "data"
 
 
 # 워크북 인스턴스 객체 => excel 파일 생성
