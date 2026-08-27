@@ -50,7 +50,7 @@ try:
     # 특수문자 제거
     filename = re.sub(r'[^a-zA-Z0-9가-힣]','',title)
 
-    file_path = os.path.join(os.getcwd(), f"{filename}.txt")
+    file_path = os.path.join(BASE_DIR/f"{filename}.txt")
 
     with open(file_path, 'w', encoding='utf-8') as f:
         f.write(score)
