@@ -11,6 +11,7 @@ headers = {
 }
 
 res = requests.get(url, headers=headers)
+res.encoding = 'utf-8'
 soup =BeautifulSoup(res.text, 'html.parser')
 
 # print(soup)

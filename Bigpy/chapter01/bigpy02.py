@@ -5,7 +5,8 @@ DATA_DIR = BASE_DIR.parent / "Py_Scrap" / "data"
 file_path = DATA_DIR / "setting2.txt"
 
 f = open(file_path, "rb")
-
+setting = pickle.load(f)
+print(setting)
 setting = [{'title':'python program'}, {'author':'soldesk'}]
 f.close()
 print(setting)
