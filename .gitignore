@@ -2,8 +2,10 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,python,windows,venv
 
 Py_Scrap
+naver_session.json
+
 ### Python ###
-# Byte-compiled / optimized / DLL files
+# Byte-ompiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class

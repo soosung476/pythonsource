@@ -1,6 +1,6 @@
 import requests
 
-s = requests.Session()
+# s = requests.Session()
 url = "http://httpbin.org/get" # test용 api
 headers = { 'user-agent':'myPythonApp_1.0.0'}
 
