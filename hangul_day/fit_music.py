@@ -49,14 +49,16 @@ def load(path: Path) -> np.ndarray:
 
 
 def onset_envelopes(x: np.ndarray):
-    """전체 대역과 저음(킥) 대역의 스펙트럼 플럭스(약 10ms 간격)."""
+    """전체 대역·저음(킥) 대역의 스펙트럼 플럭스와 저음 에너지(dB), 약 10ms 간격."""
     f, _, Z = signal.stft(x, SR, nperseg=1024, noverlap=1024 - HOP, boundary=None)
-    mag = np.log1p(100 * np.abs(Z))
+    A = np.abs(Z)
+    mag = np.log1p(100 * A)
     flux = np.maximum(np.diff(mag, axis=1), 0)
     full = flux.sum(axis=0)
     low = flux[f < 180].sum(axis=0)
+    low_db = 10 * np.log10((A[f < 180] ** 2).sum(axis=0)[1:] + 1e-10)
     norm = lambda e: (e - e.mean()) / (e.std() + 1e-9)
-    return norm(full), norm(low)
+    return norm(full), norm(low), low_db
 
 
 def estimate_tempo(env: np.ndarray) -> float:
@@ -75,8 +77,12 @@ def estimate_tempo(env: np.ndarray) -> float:
     return 60 * fps / k
 
 
-def beat_grid(full: np.ndarray, low: np.ndarray, bpm: float):
-    """박 위상과 마디 첫 박 위상(초)을 찾는다."""
+def beat_grid(full: np.ndarray, low: np.ndarray, low_db: np.ndarray, bpm: float):
+    """박 위상과 마디 첫 박 위상(초)을 찾는다.
+
+    4/4에서는 킥이 1·3박에 모두 들어가 킥만으로는 첫 박과 셋째 박이 헷갈린다.
+    그래서 구간(베이스가 들어오고 빠지는 곳)이 바뀌는 자리가 마디 첫 박이라는 점도 함께 본다.
+    """
     fps = SR / HOP
     period = 60 / bpm * fps
     n = len(full)
@@ -88,8 +94,20 @@ def beat_grid(full: np.ndarray, low: np.ndarray, bpm: float):
 
     phases = np.arange(0, period, 0.5)
     beat = phases[int(np.argmax([comb(full, p, period) for p in phases]))]
-    bar_scores = [comb(low, beat + j * period, 4 * period) + 0.5 * comb(full, beat + j * period, 4 * period) for j in range(4)]
-    bar = beat + int(np.argmax(bar_scores)) * period
+    kick = np.array([comb(low, beat + j * period, 4 * period) + 0.5 * comb(full, beat + j * period, 4 * period)
+                     for j in range(4)])
+    nb = int((n - beat) // period)
+    beat_db = np.array([low_db[int(beat + i * period):int(beat + (i + 1) * period)].mean() for i in range(nb)])
+
+    def change(j):
+        # j번째 박에서 마디가 시작한다면, 마디 경계 앞뒤 두 박씩의 저음 에너지 차이.
+        # 구간 전환은 드물지만 크므로 평균 대신 제곱평균(RMS)으로 큰 변화를 살린다.
+        d = [beat_db[i:i + 2].mean() - beat_db[i - 2:i].mean() for i in range(j, nb - 1, 4) if i >= 2]
+        return float(np.sqrt(np.mean(np.square(d)))) if d else 0.0
+
+    chg = np.array([change(j) for j in range(4)])
+    z = lambda v: (v - v.mean()) / (v.std() + 1e-9)
+    bar = beat + int(np.argmax(z(kick) + z(chg))) * period
     return beat / fps, bar / fps
 
 
@@ -113,10 +131,10 @@ def energy_curve(x: np.ndarray, ratio: float) -> np.ndarray:
 def analyze(path: Path) -> Fit:
     x = load(path)
     dur = len(x) / SR
-    full, low = onset_envelopes(x)
+    full, low, low_db = onset_envelopes(x)
     bpm = estimate_tempo(full)
     ratio = stretch_ratio(bpm)
-    _, bar0 = beat_grid(full, low, bpm)
+    _, bar0 = beat_grid(full, low, low_db, bpm)
     bar_len = 4 * 60 / (bpm * ratio)         # 늘인 뒤 마디 길이(맞췄으면 2.5초)
     first_bar = ((bar0 + ONSET_LAG) / ratio) % bar_len
 

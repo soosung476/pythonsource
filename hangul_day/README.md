@@ -4,7 +4,7 @@
 
 - 완성 영상: [`output/hangul_day_2026.mp4`](output/hangul_day_2026.mp4) — 1920×1080, 60fps, H.264 + AAC, 약 17MB
 - 썸네일: [`output/hangul_day_2026_thumbnail.jpg`](output/hangul_day_2026_thumbnail.jpg)
-- 배경음악: 지금 들어 있는 음악은 **임시 음악**입니다(아래 「음악」 참고). Suno로 만든 곡으로 바꾸는 방법을 함께 정리했습니다.
+- 배경음악: Suno로 만든 「Spring Festival Plucks」 (아래 「음악」 참고)
 
 ## 구성 (96 BPM, 1마디 = 2.5초)
 
@@ -22,10 +22,17 @@
 
 ## 음악
 
-이번 작업 환경에서는 네트워크 정책 때문에 `suno.com`, `studio-api.suno.ai`에 접속할 수 없어서
-Suno로 직접 곡을 만들지 못했습니다. 그래서 영상에는 `music.py`로 합성한 국악 퓨전풍 **임시 음악**
-(가야금·장구·대금풍 선율·현악 패드, 96 BPM, 라 장조 5음계)을 넣어 두었고, 장면 전환 시점에
-북·심벌·가야금 소리가 맞춰져 있습니다.
+영상에는 아래 프롬프트로 Suno에서 만든 「Spring Festival Plucks」 두 버전 중 첫 번째 곡이 들어 있습니다.
+
+- 곡 분석: 97.0 BPM으로 곡 전체에서 템포가 일정(박 위치 흔들림 ±4ms). 두 번째 버전(98.2 BPM)은
+  템포가 조금씩 흔들리고 장면 흐름과도 덜 맞았습니다.
+- 템포: 음높이는 그대로 두고 0.9896배(97 → 96 BPM)로 1% 늦춰서, 곡의 마디가 장면 전환(2.5초 간격)과 겹칩니다.
+- 구간: 곡의 2.95초(두 번째 마디)부터 30초. 조용한 도입부가 밤 장면에 깔리고, 곡에 베이스가 들어오는
+  지점이 ‘한글날’ 타이틀(25초)과 맞물리고, 가장 큰 박은 마지막 마디가 시작하는 27.5초에 옵니다.
+  마지막 1.7초는 페이드아웃, 음량은 -14 LUFS.
+
+Suno 곡을 넣기 전에는 `music.py`로 합성한 국악 퓨전풍 임시 음악(가야금·장구·대금풍 선율, 96 BPM)을 썼고,
+지금도 그대로 다시 만들 수 있습니다.
 
 ### Suno에서 곡 만들기 (Custom 모드)
 
@@ -76,7 +83,11 @@ python3 add_music.py suno_song.mp3 --start 42.5  # 직접 지정: 42.5초 지점
 12.5초 새벽빛 → 15~20초 절정 → 20~25초 서문 → 25초 타이틀)과 에너지 모양이 가장 닮은 30초를 고릅니다.
 
 `output/hangul_day_2026_suno.mp4`가 만들어집니다. 영상은 다시 렌더링하지 않고 그대로 복사하며,
-음악은 -14 LUFS로 맞추고 마지막 1.7초를 페이드아웃합니다(ffmpeg 필요).
+음악은 -14 LUFS로 맞추고 마지막 1.7초를 페이드아웃합니다(ffmpeg 필요). 지금 영상과 같은 설정은 다음과 같습니다.
+
+```bash
+python3 add_music.py Spring_Festival_Plucks.mp4 --start 2.9469 --tempo 0.989635
+```
 
 ## 직접 렌더링하기
 
@@ -87,6 +98,7 @@ python3 add_music.py suno_song.mp3 --start 42.5  # 직접 지정: 42.5초 지점
 python3 fetch_fonts.py          # Google Fonts에서 Noto Serif KR · Noto Sans KR 받기 (fonts/)
 python3 music.py                # 임시 음악 → output/music_placeholder.wav
 python3 render.py --audio output/music_placeholder.wav --out output/hangul_day_2026.mp4
+python3 add_music.py Spring_Festival_Plucks.mp4 --start 2.9469 --tempo 0.989635   # Suno 곡 입히기
 
 python3 render.py --still 12.8 27.5   # 특정 시점 정지 화면(PNG)
 python3 render.py --sheet             # 2초 간격 콘택트 시트
@@ -102,7 +114,7 @@ python3 render.py --sheet             # 2초 간격 콘택트 시트
 | `scene/main.js` | 애니메이션 전체. `renderFrame(t)`가 t초의 화면을 캔버스에 그림 |
 | `scene/index.html` | 캔버스와 폰트 정의 |
 | `render.py` | 헤드리스 Chromium으로 프레임을 받아 ffmpeg로 인코딩 |
-| `music.py` | 임시 배경음악 합성 |
+| `music.py` | 임시 배경음악 합성(Suno 곡을 넣기 전 버전) |
 | `add_music.py` | 음악만 교체 |
 | `fit_music.py` | 곡의 템포·마디 분석, 영상에 맞는 30초 구간 고르기 |
 | `fetch_fonts.py` | 폰트 내려받기 |
