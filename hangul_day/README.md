@@ -64,10 +64,16 @@ vocals, EDM, heavy metal, distortion
 
 ### 영상의 음악 바꾸기
 
+Suno에서 받은 두 곡을 함께 넣으면 자동으로 비교해서 고릅니다.
+
 ```bash
-python3 add_music.py ~/Downloads/suno_song.mp3                # 곡의 처음 30초
-python3 add_music.py ~/Downloads/suno_song.mp3 --start 42.5   # 42.5초 지점부터 30초
+python3 add_music.py 곡1.mp3 곡2.mp3 --auto      # 곡·구간·템포 자동 선택
+python3 add_music.py suno_song.mp3 --start 42.5  # 직접 지정: 42.5초 지점부터 30초
 ```
+
+`--auto`는 `fit_music.py`로 곡의 템포와 마디 첫 박을 찾고, 96 BPM에 가까우면(±7%) 음높이를 유지한 채
+속도를 맞춰 곡의 마디가 장면 전환(2.5초 간격)과 겹치게 합니다. 그다음 장면별 흐름(조용한 시작 →
+12.5초 새벽빛 → 15~20초 절정 → 20~25초 서문 → 25초 타이틀)과 에너지 모양이 가장 닮은 30초를 고릅니다.
 
 `output/hangul_day_2026_suno.mp4`가 만들어집니다. 영상은 다시 렌더링하지 않고 그대로 복사하며,
 음악은 -14 LUFS로 맞추고 마지막 1.7초를 페이드아웃합니다(ffmpeg 필요).
@@ -98,6 +104,7 @@ python3 render.py --sheet             # 2초 간격 콘택트 시트
 | `render.py` | 헤드리스 Chromium으로 프레임을 받아 ffmpeg로 인코딩 |
 | `music.py` | 임시 배경음악 합성 |
 | `add_music.py` | 음악만 교체 |
+| `fit_music.py` | 곡의 템포·마디 분석, 영상에 맞는 30초 구간 고르기 |
 | `fetch_fonts.py` | 폰트 내려받기 |
 
 폰트: Noto Serif KR, Noto Sans KR (SIL Open Font License 1.1, Google Fonts).
